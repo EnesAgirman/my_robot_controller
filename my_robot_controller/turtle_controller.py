@@ -10,7 +10,8 @@ from rclpy.clock import Clock
 
 class TurtleController(Node):
     
-    def __init__(self):
+    def __init__(self):\
+        
         super().__init__("turtle_controller")
         self.mySub = self.create_subscription(Pose, "/turtle1/pose", self.pose_callback, 10)
         self.myPub = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
