@@ -18,8 +18,14 @@ class ServiceExample(Node):
         self.mySub = self.create_subscription(Pose, "/turtle1/pose", self.pose_callback, 10)
         self.myPub = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
         
-        self.previous_x = 0.0
-        self.previous_y = 0.0
+        self.previous_x = 5.0
+        self.previous_y = 5.0
+        
+        self.xSpeed = 20.0
+        self.ySpeed = 17.2
+        
+        self.xSwitch = 1.0
+        self.ySwitch = 1.0
         
         self.get_logger().info("the turtle controller node has been succesfully created")
 
@@ -27,22 +33,58 @@ class ServiceExample(Node):
 
     def pose_callback(self, pose: Pose):
         cmd = Twist()
-        
-        if pose.x > 9.0 or pose.x < 2.0 or pose.y > 9.0 or pose.y < 2.0:
-            cmd.linear.x = 1.0
-            cmd.angular.z = 1.5
-        else:
-            cmd.linear.x = 5.0
-            cmd.angular.z = 0.0
-        
-        if self.previous_x <= 5.0  and pose.x > 5.0:
+
+        if pose.x > 9.0 and pose.x > self.previous_x:
+            self.get_logger().info("icerideyim")
+
             self.previous_x = pose.x
             self.previous_y = pose.y
-            self.set_pen_callback(255, 255, 255, 3, 0)
-        elif self.previous_x >= 5.0  and pose.x < 5.0:
+            
+            self.xSwitch = self.xSwitch * -1
+            self.set_pen_callback(255, 0, 0, 3, 0)
+
+        
+        elif pose.x < 1.0 and pose.x < self.previous_x:
             self.previous_x = pose.x
             self.previous_y = pose.y
+            
+            self.xSwitch = self.xSwitch * -1
             self.set_pen_callback(0, 255, 0, 3, 0)
+
+            
+        if pose.y > 9.0 and pose.y > self.previous_y:
+            self.previous_x = pose.x
+            self.previous_y = pose.y
+
+            self.ySwitch = self.ySwitch * -1
+            self.set_pen_callback(0, 0, 255, 3, 0)
+
+            
+        elif pose.y < 1.0 and pose.y < self.previous_y:
+            self.previous_x = pose.x
+            self.previous_y = pose.y
+            
+            self.ySwitch = self.ySwitch * -1
+            self.set_pen_callback(255, 255, 255, 3, 0)
+
+            
+        cmd.linear.x = self.xSpeed * self.xSwitch
+        cmd.linear.y = self.ySpeed * self.ySwitch
+        
+        # uncomment this part for the turtle line to change 
+        # color depending on what part of the screen it is on. 
+        # On the right side, it is green and 
+        # on the left size it is white
+        # if self.previous_x <= 5.0  and pose.x > 5.0:
+        #     self.previous_x = pose.x
+        #     self.previous_y = pose.y
+        #     self.set_pen_callback(255, 255, 255, 3, 0)
+            
+        # elif self.previous_x >= 5.0  and pose.x < 5.0:
+        #     self.previous_x = pose.x
+        #     self.previous_y = pose.y
+        #     self.set_pen_callback(0, 255, 0, 3, 0)
+            
         self.myPub.publish(cmd)
         
     
