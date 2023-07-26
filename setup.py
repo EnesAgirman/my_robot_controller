@@ -25,6 +25,7 @@ setup(
             "pose_subscriber = my_robot_controller.pose_subscriber:main",
             "wall_bouncer = my_robot_controller.wall_bouncer:main",
             "turtle_controller = my_robot_controller.turtle_controller:main",
+            "service_example = my_robot_controller.service_example:main",
 
         ],
     },
