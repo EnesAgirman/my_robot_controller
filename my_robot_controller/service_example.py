@@ -21,8 +21,8 @@ class ServiceExample(Node):
         self.previous_x = 5.0
         self.previous_y = 5.0
         
-        self.xSpeed = 20.0
-        self.ySpeed = 17.2
+        self.xSpeed = 4.0
+        self.ySpeed = 3.2
         
         self.xSwitch = 1.0
         self.ySwitch = 1.0
@@ -34,6 +34,14 @@ class ServiceExample(Node):
     def pose_callback(self, pose: Pose):
         cmd = Twist()
 
+        # the corners of the walls
+        if (pose.x > 9.0 and pose.x > self.previous_x and pose.y > 9.0 and pose.y > self.previous_y) or (pose.x < 1.0 and pose.x < self.previous_x and pose.y < 1.0 and pose.y < self.previous_y) or (pose.x < 1.0 and pose.x < self.previous_x and pose.y > 9.0 and pose.y > self.previous_y) or (pose.x > 9.0 and pose.x > self.previous_x and pose.y < 1.0 and pose.y < self.previous_y):
+            self.previous_x = pose.x
+            self.previous_y = pose.y
+            
+            self.xSwitch = self.xSwitch * -1
+            self.ySwitch = self.ySwitch * -1
+            
         if pose.x > 9.0 and pose.x > self.previous_x:
             self.get_logger().info("icerideyim")
 
